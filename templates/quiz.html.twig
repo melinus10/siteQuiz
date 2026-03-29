@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+</head>
+<body>
+    <h1>Quiz</h1>
+    <p>Bienvenue dans le quiz!</p>
+ 
+ <form method="POST" action="/quiz">
+    <input type="hidden" name="question_id" value="1">
+
+    <p>Quelle est la capitale de la France ?</p>
+
+    <label class="flex items-center gap-2">
+        <input type="radio" name="answer" value="Paris">
+        Paris
+    </label>
+
+    <label class="flex items-center gap-2">
+        <input type="radio" name="answer" value="Londres">
+        Londres
+    </label>
+
+    <label class="flex items-center gap-2">
+        <input type="radio" name="answer" value="Berlin">
+        Berlin
+    </label>
+
+    <button type="submit">Valider</button>
+</form>
+
+{% if result is defined %}
+    <p>{{ result }}</p>
+{% endif %}
+</body>
+</html>
