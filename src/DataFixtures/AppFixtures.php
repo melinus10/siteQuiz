@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Answers;
 use App\Entity\Questions;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -12,9 +13,14 @@ class AppFixtures extends Fixture
     {
         for($i=0; $i<10; $i++) {
             $question = new Questions();
-            $question->setId($i); 
             $question->setQuestion("Question $i");
-            $question->setAnswer("Answer $i");
+            for($j=0; $j<4; $j++) {
+                $answer = new Answers();
+                $answer->setText("Answer $j for question $i");
+                $answer->setIsCorrect($j === 0); // Set the first answer as correct
+                $answer->setQuestion($question);
+                $manager->persist($answer);
+            }
             $manager->persist($question);
         }
         $manager->flush();
