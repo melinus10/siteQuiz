@@ -17,7 +17,6 @@ class AppFixtures extends Fixture
             $question->setAnswer("Answer $i");
             $manager->persist($question);
         }
-    
         $manager->flush();
     }
 }
