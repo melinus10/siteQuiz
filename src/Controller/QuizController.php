@@ -26,4 +26,3 @@ class QuizController extends AbstractController
     }
 
 }
-

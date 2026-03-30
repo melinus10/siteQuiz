@@ -15,44 +15,45 @@ class Questions
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $description = null;
-
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $text = null;
+    private ?string $question = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $answer = null;
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(Number $id): static
+    public function setId(int $id): static
     {
         $this->id = $id;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getQuestion(): ?string
     {
-        return $this->description;
+        return $this->question;
     }
 
-    public function setDescription(string $description): static
+    public function setQuestion(string $question): static
     {
-        $this->description = $description;
+        $this->question = $question;
 
         return $this;
     }
 
-    public function getText(): ?string
+    public function getAnswer(): ?string
     {
-        return $this->text;
+        return $this->answer;
     }
 
-    public function setText(string $text): static
+    public function setAnswer(string $answer): static
     {
-        $this->text = $text;
+        $this->answer = $answer;
 
         return $this;
     }
