@@ -17,7 +17,7 @@ class AppFixtures extends Fixture
             for($j=0; $j<4; $j++) {
                 $answer = new Answers();
                 $answer->setText("Answer $j for question $i");
-                $answer->setIsCorrect($j === 0); // Set the first answer as correct
+                $answer->setIsCorrect($j === 0);
                 $answer->setQuestion($question);
                 $manager->persist($answer);
             }

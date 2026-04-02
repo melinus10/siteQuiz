@@ -15,7 +15,7 @@ class Answers
 
     #[ORM\Column(length: 255)]
     private ?string $text = null;
-
+    
     #[ORM\Column]
     private ?bool $isCorrect = null;
 
