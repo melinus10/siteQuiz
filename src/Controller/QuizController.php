@@ -19,15 +19,17 @@ class QuizController extends AbstractController
             'question' => $question
         ]);
         $form->handleRequest($request);
+        $answers = $request->getSession()->get('reponses', []);
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+            $userAnswerArray = $form->getData();
             $score = 0;
-            foreach ($data as $reponseChoisie) {
-                if ($reponseChoisie->isCorrect()) {
+                if ($userAnswerArray['reponse']->isCorrect()) {
                     $score++;
                 }
-            }
+            $answers[$question->getId()] = $userAnswerArray['reponse']->getId();
+            $request->getSession()->set('reponses', $answers);
             $nextQuestion = $repo->findNextQuestion($question->getId());
+            dump($request->getSession()->all()); 
             if ($nextQuestion) {
                 return $this->redirectToRoute('quiz', ['id' => $nextQuestion->getId()]);
             } else {
@@ -36,6 +38,7 @@ class QuizController extends AbstractController
                 ]);
             }
         }
+        
         return $this->render('quiz.html.twig', [
             'form' => $form->createView(),
         ]);
