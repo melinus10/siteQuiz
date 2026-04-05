@@ -1,32 +1,8 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Genius Quizzes | Challenge Your Mind</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
+{% extends 'base.html.twig' %}
+
+{% block body %}
 <body class="bg-gray-50 text-gray-900 font-sans antialiased">
 
- <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
-            <h1 class="text-2xl font-black bg-gradient-to-r from-fuchsia-600 to-purple-600 bg-clip-text text-transparent">
-                Genius Quizzes
-            </h1>
-            
-            <ul class="hidden md:flex items-center gap-8 font-medium text-gray-600">
-                <li><a href="{{ path('home') }}" class="hover:text-fuchsia-600 transition">Home</a></li>
-                <li><a href="{{ path('quiz') }}" class="hover:text-fuchsia-600 transition">Quiz</a></li>
-                <li><a href="#" class="hover:text-fuchsia-600 transition">About me</a></li>
-                <li>
-                    <a href="#" class="bg-fuchsia-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-fuchsia-700 transition shadow-lg shadow-fuchsia-200">
-                        Start Quiz
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </header>
-    
     <main>
         <section class="container mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row items-center gap-12">
             
@@ -58,7 +34,6 @@
         </section>
     </main>
 
+{% endblock %}
     
 
-</body>
-</html>
