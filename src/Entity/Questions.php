@@ -22,7 +22,7 @@ class Questions
     /**
      * @var Collection<int, Answers>
      */
-    #[ORM\OneToMany(targetEntity: Answers::class, mappedBy: 'question', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Answers::class, mappedBy: 'question', orphanRemoval: true , cascade: ['persist'])]
     private Collection $answers;
 
     public function __construct()
@@ -68,7 +68,6 @@ class Questions
     public function removeAnswer(Answers $answer): static
     {
         if ($this->answers->removeElement($answer)) {
-            // set the owning side to null (unless already changed)
             if ($answer->getQuestion() === $this) {
                 $answer->setQuestion(null);
             }
