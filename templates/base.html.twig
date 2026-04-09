@@ -35,14 +35,20 @@
                
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                  <li>
-                    <a href="{{ path('admin') }}" class="hover:text-fuchsia-600 transition">Admin</a>
+                    <a href="{{ path('admin_question_list') }}" class="hover:text-fuchsia-600 transition">Admin</a>
                 </li>
+                <li> 
+                    <a href="{{ path('admin_user_list')}}" class="hover:text-fuchsia-600 transition">
+                   users
+                    </a>
+                </li> 
                 <li>
                     <a href="{{ path('logout') }}" class="bg-fuchsia-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-fuchsia-700 transition shadow-lg shadow-fuchsia-200">
                         Logout
                     </a>
                 </li>
-            {% else %}
+            
+            {% else %} 
                 <li>
                     <a href="{{ path('login') }}" class="bg-fuchsia-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-fuchsia-700 transition shadow-lg shadow-fuchsia-200">
                         Log in

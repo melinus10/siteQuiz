@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class AdminController extends AbstractController
 {
-    #[Route('/admin', name: 'admin')]
+    #[Route('/admin', name: 'admin_question_list')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function list(QuestionsRepository $repo): Response
     {
@@ -44,7 +44,7 @@ class AdminController extends AbstractController
             $em->getManager()->persist($question);
             $em->getManager()->flush();
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('admin_question_list');
         }
 
         return $this->render('new.html.twig', [
