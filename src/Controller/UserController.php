@@ -15,6 +15,42 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UserController extends AbstractController
 {
+
+   #[Route('/inscription', name: 'inscription')]
+    public function inscription(Request $request , SluggerInterface $slugger ,  ManagerRegistry $em, UserPasswordHasherInterface $passwordHasher)
+    {
+        $user = new User($passwordHasher);  
+
+    $form = $this->createForm(UserType::class, $user);
+    $form->handleRequest($request);
+    
+    if ($form->isSubmitted() && $form->isValid()) { 
+        $userName=$form->get('username')->getData();
+        $user->setUserName($userName);
+       $password = $form->get('password')->getData();
+       $user->setPassword($password);
+       $pdp = $form->get('photoprofile')->getData();
+        if ($pdp) {
+            $originalFilename = pathinfo($pdp->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$pdp->guessExtension();
+        
+            $pdp->move(
+                $this->getParameter('pdp_directory'),
+                $newFilename
+            );
+            $user->setProfilePicture($newFilename);
+        }
+       $em->getManager()->persist($user);
+       $em->getManager()->flush();
+        return $this->redirectToRoute('home'); 
+        }
+        return $this->render('inscription.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+    
+
     #[Route('/admin/users', name: 'admin_user_list')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function list(ManagerRegistry $em): Response
