@@ -1,33 +1,33 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-	<div class="max-w-4xl mx-auto my-10 p-8 bg-white rounded-3xl shadow-xl border border-gray-100">
-		<h1 class="text-3xl font-black text-gray-800 mb-8 uppercase italic">
-			Liste des Users
-		</h1>
-		<a href="{{ path('admin_user_new') }}" class="inline-block mb-8 px-6 py-3 bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white font-bold rounded-xl shadow hover:scale-[1.02] transition">
-			➕ Ajouter un user
-		</a>
-		{% for user in users %}
-			<div class="mb-8 p-6 bg-gray-50 rounded-2xl border-2 border-gray-200 hover:border-fuchsia-300 transition-all">
-				<h2 class="text-xl font-bold text-gray-800 mb-4">
-					{{ user.username }}
-				</h2>
-				<div class="flex items-center gap-4">
-					<a href="{{ path('admin_user_edit', {'id': user.id}) }}" class="px-5 py-2 bg-fuchsia-100 text-fuchsia-700 font-bold rounded-lg hover:bg-fuchsia-200 transition">
-						✏️ Modifier
-					</a>
-					<form method="post" action="{{ path('admin_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Tu es sûre de vouloir supprimer ce user ?');">
-						<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-						<button type="submit" class="px-5 py-2 bg-red-100 text-red-600 font-bold rounded-lg hover:bg-red-200 transition">
-							❌ Supprimer
-						</button>
-					</form>
-				</div>
-                <img src="{{ asset('images/' ~ user.profilePicture) }}" alt="Photo de profil" class="w-16 h-16 rounded-full object-cover border-2 border-fuchsia-400 shadow-md">
-			</div>
-            
-		{% else %}
-			<p class="text-gray-500 italic">Aucun user trouvée.</p>
-		{% endfor %}
-	</div>
+<div class="max-w-4xl mx-auto my-10 p-8 bg-white rounded-3xl shadow-xl border border-gray-100">
+    <h1 class="text-3xl font-black text-gray-800 mb-8 uppercase italic">
+        Liste des Users
+    </h1>
+    <a href="{{ path('admin_user_new') }}" class="inline-block mb-8 px-6 py-3 bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white font-bold rounded-xl shadow hover:scale-[1.02] transition">
+        ➕ Ajouter un user
+    </a>
+
+    {% for user in users %}
+        <div class="mb-8 p-6 bg-gray-50 rounded-2xl border-2 border-gray-200 hover:border-fuchsia-300 transition-all flex items-center justify-between">
+            <div>
+                <h2 class="text-xl font-bold text-gray-800 mb-4">{{ user.username }}</h2>
+                <div class="flex items-center gap-4">
+                    <a href="{{ path('admin_user_edit', {'id': user.id}) }}" class="px-5 py-2 bg-fuchsia-100 text-fuchsia-700 font-bold rounded-lg hover:bg-fuchsia-200 transition">
+                        ✏️ Modifier
+                    </a>
+                    <form method="post" action="{{ path('admin_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Tu es sûre de vouloir supprimer ce user ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                        <button type="submit" class="px-5 py-2 bg-red-100 text-red-600 font-bold rounded-lg hover:bg-red-200 transition">
+                            ❌ Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <img src="{{ asset('images/' ~ user.profilePicture) }}" alt="Photo de profil" class="w-16 h-16 rounded-full object-cover border-2 border-fuchsia-400 shadow-md ml-4">
+        </div>
+    {% else %}
+        <p class="text-gray-500 italic">Aucun user trouvée.</p>
+    {% endfor %}
+</div>
 {% endblock %}

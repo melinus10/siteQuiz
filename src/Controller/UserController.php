@@ -19,7 +19,11 @@ class UserController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function list(ManagerRegistry $em): Response
     {
-        $users = $em->getManager()->getRepository(User::class)->findAll();
+        $allUsers = $em->getRepository(User::class)->findAll();
+        $currentUser = $this->getUser();
+        $users = array_filter($allUsers, function($user) use ($currentUser) {
+        return $user !== $currentUser;
+    });
 
         return $this->render('user/list.html.twig', [
             'users' => $users,
@@ -37,10 +41,8 @@ class UserController extends AbstractController
     
     if ($form->isSubmitted() && $form->isValid()) { 
         $password = $form->get('password')->getData();
-        if ($password) {
-            $hashedPassword = $passwordHasher->hashPassword($user, $password);
-            $user->setPassword($hashedPassword);
-        }
+       $user->setPassword($password);
+        
 
         $pdp = $form->get('photoprofile')->getData();
         if ($pdp) {
@@ -68,21 +70,42 @@ class UserController extends AbstractController
 
     #[Route('/admin/user/edit/{id}', name: 'admin_user_edit')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function edit(User $user, Request $request, ManagerRegistry $em): Response
-    {
-       $form = $this->createForm(UserType::class, $user);
+    public function edit(User $user, Request $request , UserPasswordHasherInterface $passwordHasher , ManagerRegistry $em, SluggerInterface $slugger): Response
+{
+    $user->__construct($passwordHasher);
+    $form = $this->createForm(UserType::class, $user);
+    $form->handleRequest($request);
+    
+    if ($form->isSubmitted() && $form->isValid()) {
 
-       $form->handleRequest($request);
-       
-       if ($form->isSubmitted() && $form->isValid()) { 
+        $pdp = $form->get('photoprofile')->getData();  
+        $password = $form->get('password')->getData();
+        if (!empty($password)) {
+            $user->setPassword($password);
+        }
+
+        if ($pdp) {
+            $originalFilename = pathinfo($pdp->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$pdp->guessExtension();
+
+            $pdp->move(
+                $this->getParameter('pdp_directory'),
+                $newFilename
+            );
+
+            $user->setProfilePicture($newFilename);
+        }
+
         $em->getManager()->flush();
+
         return $this->redirectToRoute('admin_user_list');
-       }   
-       return $this->render('user/edit.html.twig', [
-        'form' => $form->createView(),
-    ]);
     }
 
+    return $this->render('user/edit.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
     #[Route('/admin/user/delete/{id}', name: 'admin_user_delete')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function delete(User $user, ManagerRegistry $em): Response
