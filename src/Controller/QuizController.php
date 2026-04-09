@@ -13,6 +13,19 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class QuizController extends AbstractController
 {
+
+#[Route('/quiz/start', name: 'quiz_start')]
+public function start(QuestionsRepository $questionsRepo): Response
+{
+    $firstQuestion = $questionsRepo->findOneBy([], ['id' => 'ASC']);
+
+    if (!$firstQuestion) {
+        return $this->redirectToRoute('home'); 
+    }
+
+    return $this->redirectToRoute('quiz', ['id' => $firstQuestion->getId()]);
+}
+
     #[Route('quiz/{id}', name: 'quiz')]
     public function quiz(Request $request, Questions $question, QuestionsRepository $questionsRepo , AnswersRepository $AnswersRepo): Response
     {
