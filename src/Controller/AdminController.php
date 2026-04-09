@@ -6,15 +6,17 @@ use App\Entity\Answers;
 use App\Entity\Questions;
 use App\Form\QuestionsType;
 use App\Repository\QuestionsRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class AdminController extends AbstractController
 {
-    #[Route('/admin', name: 'admin_question_list')]
+    #[Route('/admin', name: 'admin')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function list(QuestionsRepository $repo): Response
     {
         $questions = $repo->findAll();
@@ -25,7 +27,8 @@ class AdminController extends AbstractController
     }
 
     #[Route('/admin/question/new', name: 'admin_question_new')]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function new(Request $request, ManagerRegistry $em): Response
     {
         $question = new Questions();
 
@@ -38,8 +41,8 @@ class AdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($question);
-            $em->flush();
+            $em->getManager()->persist($question);
+            $em->getManager()->flush();
 
             return $this->redirectToRoute('home');
         }
@@ -50,13 +53,14 @@ class AdminController extends AbstractController
     }
 
     #[Route('/admin/question/edit/{id}', name: 'admin_question_edit')]
-    public function edit(Questions $question, Request $request, EntityManagerInterface $em): Response
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function edit(Questions $question, Request $request, ManagerRegistry $em): Response
     {
         $form = $this->createForm(QuestionsType::class, $question);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
+            $em->getManager()->flush();
 
             return $this->redirectToRoute('admin_question_list');
         }
@@ -67,10 +71,11 @@ class AdminController extends AbstractController
     }
 
     #[Route('/admin/question/delete/{id}', name: 'admin_question_delete')]
-    public function delete(Questions $question, EntityManagerInterface $em): Response
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function delete(Questions $question, ManagerRegistry $em): Response
     {
-        $em->remove($question);
-        $em->flush();
+        $em->getManager()->remove($question);
+        $em->getManager()->flush();
 
         return $this->redirectToRoute('admin_question_list');
     }

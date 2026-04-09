@@ -28,14 +28,27 @@
             </h1>
             
             <ul class="hidden md:flex items-center gap-8 font-medium text-gray-600">
-                <li><a href="{{ path('home') }}" class="hover:text-fuchsia-600 transition">Home</a></li>
-                <li><a href="{{ path('quiz', {'id': 1}) }}" class="hover:text-fuchsia-600 transition">Quiz</a></li>
-                <li><a href="#" class="hover:text-fuchsia-600 transition">About me</a></li>
+                 <li><a href="{{ path('home') }}" class="hover:text-fuchsia-600 transition">Home</a></li>
+
                 <li>
-                    <a href="#" class="bg-fuchsia-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-fuchsia-700 transition shadow-lg shadow-fuchsia-200">
-                        Start Quiz
+                <a href="{{ path('quiz', {'id': 1}) }}" class="hover:text-fuchsia-600 transition">Quiz</a></li>
+               
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                 <li>
+                    <a href="{{ path('admin') }}" class="hover:text-fuchsia-600 transition">Admin</a>
+                </li>
+                <li>
+                    <a href="{{ path('logout') }}" class="bg-fuchsia-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-fuchsia-700 transition shadow-lg shadow-fuchsia-200">
+                        Logout
                     </a>
                 </li>
+            {% else %}
+                <li>
+                    <a href="{{ path('login') }}" class="bg-fuchsia-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-fuchsia-700 transition shadow-lg shadow-fuchsia-200">
+                        Log in
+                    </a>
+                </li>
+            {% endif %}
             </ul>
         </nav>
     </header>
