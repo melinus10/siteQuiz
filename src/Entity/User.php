@@ -34,6 +34,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         private $passwordh ;    
 
+
+    #[ORM\Column(type: 'string')]
+    private string $profilePicture = 'default.png';
+
         public function __construct(UserPasswordHasher $passwordh)
         {
             $this->passwordh = $passwordh;
@@ -99,6 +103,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $this->passwordh->hashPassword($this, $password);
+
+        return $this;
+    }
+
+
+    public function getProfilePicture(): string
+    {
+        return $this->profilePicture;
+    }   
+
+    public function setProfilePicture(string $profilePicture): static
+    {
+        $this->profilePicture = $profilePicture;
 
         return $this;
     }

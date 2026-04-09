@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UserController extends AbstractController
 {
@@ -27,7 +28,7 @@ class UserController extends AbstractController
 
     #[Route('/admin/user/new', name: 'admin_user_new')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function new(Request $request, ManagerRegistry $em, UserPasswordHasherInterface $passwordHasher)
+    public function new(Request $request,  SluggerInterface $slugger,  ManagerRegistry $em, UserPasswordHasherInterface $passwordHasher)
 {
     $user = new User($passwordHasher);  
 
@@ -35,10 +36,23 @@ class UserController extends AbstractController
     $form->handleRequest($request);
     
     if ($form->isSubmitted() && $form->isValid()) { 
-        $plainPassword = $form->get('plainPassword')->getData();
-        if ($plainPassword) {
-            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+        $password = $form->get('password')->getData();
+        if ($password) {
+            $hashedPassword = $passwordHasher->hashPassword($user, $password);
             $user->setPassword($hashedPassword);
+        }
+
+        $pdp = $form->get('photoprofile')->getData();
+        if ($pdp) {
+            $originalFilename = pathinfo($pdp->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$pdp->guessExtension();
+        
+            $pdp->move(
+                $this->getParameter('pdp_directory'),
+                $newFilename
+            );
+            $user->setProfilePicture($newFilename);
         }
 
         $em->getManager()->persist($user);
